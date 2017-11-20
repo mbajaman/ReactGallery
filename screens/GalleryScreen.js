@@ -1,67 +1,25 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {
-	Text, 
-	View, 
-	StatusBar, 
-	StyleSheet, 
-	Image, 
-	ActivityIndicator, 
-	TouchableOpacity, 
-	CameraRoll, 
-	Dimensions, 
-	ScrollView} from 'react-native';
+	Text,
+	View,
+	StatusBar,
+	StyleSheet,
+	Image,
+	TouchableOpacity,
+	Dimensions,
+	ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo';
 import { ImagePicker } from 'expo';
 
 
 export default class GalleryScreen extends Component {
 
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {
-			image: null,
-			photos: [],
-			index: null,
-		}
-	}
-
-	setIndex = (index) => {
-		if (index === this.state.index) {
-			index = null
-		}
-		this.setState({index})
-	}
-
-	getPhotos = () => {
-		CameraRoll.getPhotos({
-			first: 20,
-			assetType: 'All'
-		})
-		.then(r => this.setState({
-			photos: r.edges
-		}))
-	}
-
-	toggleModal = () => {
-		this.setState({ modalVisisble: !this.state.modalVisisble})
-	}
-
-	share = () => {
-		const image = this.state.photos[this.state.index].node.image.url
-		/*RNFetchBlob.fs.readFile(image, 'base64')
-		.then((data) => {
-			const shareOptions = {
-				title: 'React Native Share Example',
-				message: 'Check out this photo',
-				url: 'data:image/jpg;base64,${data}',
-				subject: 'Check out this photo'
-			}
-			Share.open(shareOptions)
-				.then(res => console.log('success!', res'))
-				.catch(err => console.log('error!', err))
-		})
-		*/
+			photos: []
+		};
 	}
 
 	_pickImage = async () => {
@@ -70,17 +28,33 @@ export default class GalleryScreen extends Component {
 			aspect: [5, 5],
 		});
 
-		console.log(result);
+		if(!result.cancelled) {
+			this.state.photos.push(result)
+			this.setState({
+				photos: this.state.photos
+			});
+			console.log(this.state.photos);
+		}
+	};
+
+	_takePhoto = async () => {
+		let result = await ImagePicker.launchCameraAsync({
+			allowsEditing: true,
+			aspect: [5, 5],
+			quality: 1,
+		});
 
 		if(!result.cancelled) {
+			this.state.photos.push(result)
 			this.setState({
-				image: result.uri
+				photos: this.state.photos
 			});
+			console.log(this.state.photos);
 		}
 	};
 
 	render(){
-		let {image} = this.state;
+		const width = Dimensions.get('window');
 
 		return(
 			<View>
@@ -91,29 +65,37 @@ export default class GalleryScreen extends Component {
 
 				<View style = {styles.camera}>
 					<Icon.Button
+						name="plus" 
+						size= {22}
+						backgroundColor="#663399"
+						onPress={ this._pickImage } />	
+					<Icon.Button
 						name="camera" 
 						size= {22}
 						backgroundColor="#663399"
-						onPress={this._pickImage} />					
+						onPress={ this._takePhoto } />					
 					<Icon.Button
 						name="dots-three-vertical" 
 						backgroundColor="#663399"/>
 				</View>
 
 				<View style={styles.container}>
-					{!image && <ActivityIndicator />}
-					{image &&
-						<TouchableOpacity
-								style={styles.image}
-								onPress={this._editImage}
-							>
-							<Image source={{
-								uri: image
-							}} style = {{
-								width: 200,
-								height: 200
-							}} />
-						</TouchableOpacity>}
+					<ScrollView
+						contentContainerStyle = {styles.scrollView}
+						>
+						{this.state.photos.map(function(p, index) {
+							return(
+								<TouchableOpacity key={index}>
+									<Image 
+									style={styles.image}
+									source={{uri: p.uri}}
+									key={index}
+			                         />
+		                         </TouchableOpacity>
+							)
+						})
+						}
+					</ScrollView>
 				</View>
 			</View>
 		);
@@ -144,7 +126,13 @@ const styles = StyleSheet.create({
   	marginTop:10,
   },
   image: {
-  	margin: 3,
+  	height: 200,
+  	width: 200,
+  	margin: 2,
+  },
+  scrollView: {
+  	flexWrap: 'wrap',
+  	flexDirection: 'row',
   },
 });
 
