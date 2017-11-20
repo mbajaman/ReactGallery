@@ -20,7 +20,7 @@ export default class GalleryScreen extends Component {
 		super(props);
 		this.state = {
 			photos: [],
-			token: 'EAAVvv0QxeqMBAKhoMfj39ODcK8jHtZA7XUrI4DRsVTVfE2IaNk7ZA7W4IEYSrbLirBZCbwIhrfc4nsD9xNHvhsEVDRPoHUhN1aHFOZC6EjOPPpvb5NJ2IZBqDhZCD5yzZCFKKgKRLI5FJYdDUG3kj1sYBflV0ttb8CUewtrs5TZCZA0pW1VcLgrljVZBFbzrFgVu7kvyL3uqfZBg5dkivuesgFM',
+			token: '',
 			fbImage: require('../assets/placeholder.png'),
 		};
 	}
