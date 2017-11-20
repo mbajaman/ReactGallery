@@ -1,11 +1,8 @@
 import React from 'react';
 import { Animated, Dimensions, StyleSheet, Text, View, Image} from 'react-native';
 import Expo from 'expo';
-import { MainStack } from './navigator/nav';
-
-import HomeScreen from './screens/HomeScreen'
-
-
+import { MainStack } from './navigator/nav'; //Navigation Control
+import HomeScreen from './screens/HomeScreen'; //Home-Login Screen
 
 const videoSource = require('./assets/wave.mp4')
 

@@ -3,26 +3,27 @@ import { Animated, Dimensions, StyleSheet, Text, View, Image, TouchableOpacity} 
 import Expo from 'expo';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const videoSource = require('../assets/wave.mp4')
+const videoSource = require('../assets/wave.mp4') //video background.
 
-export default class HomeScreen extends Component {
+//Login Screen
+export default class HomeScreen extends Component { 
 	state = {
 	    loaded: false,
 	    backgroundOpacity: new Animated.Value(0),
 	  }
 
-	async componentWillMount() {
+	async componentWillMount() { //waits for video to load
     await Expo.Asset.fromModule(videoSource).downloadAsync();
     this.setState({loaded: true});
   }
 
-  _fadeInVideo = () => {
+  _fadeInVideo = () => { //animation effect
     setTimeout(() => {
       Animated.spring(this.state.backgroundOpacity, {toValue: 1}).start()
     }, 500);
   }
 
-  _handleVideoRef(videoRef) {
+  _handleVideoRef(videoRef) { 
      videoRef.loadAsync(videoSource, {
        shouldPlay: true,
        isLooping: true,
@@ -31,7 +32,7 @@ export default class HomeScreen extends Component {
      this.videoRef = videoRef;
    }
 
-  render() {
+  render() { //renders video in background and places other elements on top
   	const {navigate} = this.props.navigation;
 
   	if (!this.state.loaded) {
@@ -52,35 +53,22 @@ export default class HomeScreen extends Component {
         </View>
         	<Image style={styles.logo} source={require('../assets/wave-logo.png')} />
         <View>
-        <View style={styles.loginContainer}>
-        	<Icon.Button
-        			style={styles.button}
-					name="facebook"
-					backgroundColor="#3b5998">
-					Login with facebook
-				</Icon.Button>
-        </View>
-        <View style={styles.loginContainer}>
-        	<Icon.Button
-        			style={styles.button}
-					name="google"
-					backgroundColor="#d34836">
-					Login with Google
-				</Icon.Button>
-		</View>
+
 		<View style={styles.loginContainer}>
         	<TouchableOpacity  
         		style = {styles.buttonContainer}
         		onPress={() => navigate('Gallery')}>
-        		<Text style={styles.buttonText}> Skip > </Text>
+        		<Text style={styles.buttonText}> Next > </Text>
         	</TouchableOpacity>
 		</View>
         </View>
       </View>
     );
   }
+
 }
 
+//Stylesheet for elements above.
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -120,3 +108,4 @@ const styles = StyleSheet.create({
 
 });
 Expo.registerRootComponent(HomeScreen);
+
